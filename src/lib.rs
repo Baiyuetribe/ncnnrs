@@ -23,7 +23,10 @@ pub use option::*;
 use std::ffi::CStr;
 
 pub fn version() -> &'static str {
-    let c_buf = unsafe { ncnn_bind::ncnn_version() };
+    let c_buf = unsafe { ncnn_bind::ncnn_version() };\
+    if c_buf.is_null() {
+        return "unknown";
+    }
     let c_str = unsafe { CStr::from_ptr(c_buf) };
     let str_slice: &str = c_str.to_str().unwrap_or("unknown");
     str_slice
@@ -40,13 +43,25 @@ pub fn destroy_gpu_instance() {
 
 pub fn get_gpu_heap_budget(index: i32) -> u32 {
     let device = unsafe { ncnn_bind::ncnn_get_gpu_device(index) };
+    if device.is_null() {
+        return 0;
+    }
     let res = unsafe { ncnn_bind::ncnn_VulkanDevice_get_heap_budget(device) };
+    if res.is_null() {
+        return 0;
+    }
     res
 }
 
 pub fn get_device_name(index: i32) -> &'static str {
     let info = unsafe { ncnn_bind::ncnn_get_gpu_info(index) };
-    let res: *const i8 = unsafe { ncnn_bind::ncnn_GpuInfo_device_name(info) };
+    if info.is_null() {
+        return "unknown";
+    }
+    let res = unsafe { ncnn_bind::ncnn_GpuInfo_device_name(info) };
+    if res.is_null() {
+        return "unknown";
+    }
     let c_str = unsafe { CStr::from_ptr(res) };
     let str_slice: &str = c_str.to_str().unwrap_or("unknown");
     str_slice
