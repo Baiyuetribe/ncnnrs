@@ -23,7 +23,7 @@ pub use option::*;
 use std::ffi::CStr;
 
 pub fn version() -> &'static str {
-    let c_buf = unsafe { ncnn_bind::ncnn_version() };\
+    let c_buf = unsafe { ncnn_bind::ncnn_version() };
     if c_buf.is_null() {
         return "unknown";
     }
@@ -47,9 +47,6 @@ pub fn get_gpu_heap_budget(index: i32) -> u32 {
         return 0;
     }
     let res = unsafe { ncnn_bind::ncnn_VulkanDevice_get_heap_budget(device) };
-    if res.is_null() {
-        return 0;
-    }
     res
 }
 
