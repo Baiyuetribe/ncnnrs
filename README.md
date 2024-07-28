@@ -48,6 +48,32 @@ cargo run .
 # Out: ncnn version: 1.0.20240727
 ```
 
+### 通用示例
+
+```rust
+use ncnnrs::{Mat, Net, Option};
+
+fn main() {
+    let mut opt = Option::new();
+    opt.set_num_threads(4);
+    opt.set_vulkan_compute(true);
+
+    let mut net = Net::new();
+    net.set_option(&opt); // 设置参数
+                          // 加载模型
+    net.load_param("xxx.param");
+    net.load_model("xxx.bin");
+
+    // 推理
+    let mut in0 = Mat::new_3d(224, 224, 3, None);
+    let mut out = Mat::new();
+    let mut ex = net.create_extractor();
+    ex.input("in0", &mut in0);
+    ex.extract("out0", &mut out);
+    println!("{:?}", out);
+}
+```
+
 更多演示，可复用`tpoisonooo/rust-ncnn`的相关案例。
 
 ### 跨端开发
