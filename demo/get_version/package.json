@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "dev": "cargo watch -q -w src -x check",
+        "pre": "cargo watch -q -w src -x run"
+    }
+}

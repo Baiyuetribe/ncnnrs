@@ -1,0 +1,26 @@
+[package]
+name = "ncnn_demo_get_version"
+
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# ncnn_demo = { path = "../../ncnn_demo" }
+ncnnrs = "*"
+# /Users/baiyue/work/ncnn_demo/example/get_version/Cargo.toml
+# example/get_version/Cargo.toml
+
+
+[lints.rust]
+#unsafe_code = "forbid"
+warnings = "allow" # deny, warn, allow, or forbid
+
+
+# 这部分优化，可以大幅缩减安装包体积
+[profile.release]
+opt-level = 3     # 启用最大级别的优化;性能优先
+lto = "fat"       # 启用 Link Time Optimization；true代表在意大小，fat为胖优化，更高性能但体积略大，实测无体积增加
+codegen-units = 1 # 控制编译单元的数量，这里设置为 1 可以减小体积
+debug = false     # 关闭调试信息
+panic = "abort"   # 在发生 panic 时立即终止程序，减小体积
+strip = "symbols" # 或者 "symbols" # 不加时489kb,debuginfo时442kb;symbols时只有362kb;symbols等价于strip
