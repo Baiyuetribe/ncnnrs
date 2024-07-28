@@ -31,6 +31,16 @@ impl Net {
         }
     }
 
+    pub fn load_param_memory(&mut self, param_data: &[u8]) -> anyhow::Result<()> {
+        let c_str =
+            CString::new(param_data).map_err(|e| anyhow::anyhow!("Invalid param data: {}", e))?;
+        let result = unsafe { ncnn_net_load_param_memory(self.ptr, c_str.as_ptr()) };
+        if result != 0 {
+            anyhow::bail!("Error loading params from memory");
+        } else {
+            Ok(())
+        }
+    }
     pub fn load_model(&mut self, path: &str) -> anyhow::Result<()> {
         let c_str = CString::new(path).unwrap();
         if unsafe { ncnn_net_load_model(self.ptr, c_str.as_ptr()) } != 0 {
