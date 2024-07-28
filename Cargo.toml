@@ -7,7 +7,7 @@ description = " Rust implementation of ncnn, a lightweight neural network infere
 repository = "https://github.com/Baiyuetribe/ncnnrs"
 license = "MIT"
 keywords = ["ncnn", "ncnn_rust", "rust_ncnn", "ncnnrs"]
-categories = ["Mathematics", "rust-patterns"]
+categories = ["api-bindings", "development-tools"]
 exclude = ["demo/*"]
 
 
