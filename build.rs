@@ -3,21 +3,24 @@ use std::path::PathBuf;
 
 fn main() {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-
-    let header_path = env::var("NCNN_INCLUDE_DIR")
-        .map(|dir| PathBuf::from(dir).join("c_api.h"))
+    let ncnn_include_dir = env::var("NCNN_INCLUDE_DIR")
+        .map(|dir| PathBuf::from(dir))
         .expect(
             "ERROR: please set NCNN_INCLUDE_DIR,e.g. export NCNN_INCLUDE_DIR=/path/to/ncnn/include",
         );
-    if !header_path.exists() {
+    if !ncnn_include_dir.join("c_api.h").exists() {
         panic!(
-            "ERROR: please set NCNN_INCLUDE_DIR,e.g. export NCNN_INCLUDE_DIR=/path/to/ncnn/include"
+            "ERROR: please set NCNN_INCLUDE_DIR,e.g2. export NCNN_INCLUDE_DIR=/path/to/ncnn/include"
         );
     }
 
     // println!("cargo:rerun-if-env-changed=NCNN_INCLUDE_DIR");
     let bindings = bindgen::Builder::default()
-        .header(header_path.to_str().unwrap())
+        .header(format!("{}/gpu.h", ncnn_include_dir.display())) // 启用gpu相关的函数
+        .header(format!("{}/c_api.h", ncnn_include_dir.display())) // 通用入口
+        // .clang_arg(format!("-I{}", ncnn_include_dir.display())) // 无效
+        .clang_arg("-x")
+        .clang_arg("c++")
         .allowlist_type("regex")
         .allowlist_function("ncnn.*")
         .allowlist_var("NCNN.*")
