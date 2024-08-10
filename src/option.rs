@@ -24,7 +24,7 @@ impl Option {
         unsafe { ncnn_option_get_num_threads(self.ptr) as u32 }
     }
 
-    pub fn set_vulkan_compute(&mut self, enabled: bool) {
+    pub fn use_vulkan_compute(&mut self, enabled: bool) {
         unsafe {
             ncnn_option_set_use_vulkan_compute(self.ptr, enabled as c_int);
         }

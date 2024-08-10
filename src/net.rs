@@ -2,6 +2,7 @@ use crate::datareader::DataReader;
 use crate::ncnn_bind::*;
 use crate::Extractor;
 use std::ffi::CString;
+use std::os::raw::c_int;
 
 pub struct Net {
     ptr: ncnn_net_t,
@@ -19,6 +20,12 @@ impl Net {
     pub fn set_option(&mut self, opt: &crate::option::Option) {
         unsafe {
             ncnn_net_set_option(self.ptr, opt.ptr());
+        }
+    }
+
+    pub fn set_vulkan_device(&mut self, device_index: u32) {
+        unsafe {
+            ncnn_net_set_vulkan_device(self.ptr, device_index as c_int);
         }
     }
 

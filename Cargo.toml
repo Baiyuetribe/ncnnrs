@@ -1,6 +1,6 @@
 [package]
 name = "ncnnrs"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["baiyue"]
 description = " Rust implementation of ncnn, a lightweight neural network inference framework, with separated static library for cross-platform compilation."
