@@ -30,7 +30,17 @@ impl Net {
     }
 
     pub fn load_param(&mut self, path: &str) -> anyhow::Result<()> {
-        let c_str = CString::new(path).unwrap();
+        let c_str = {
+            #[cfg(target_os = "windows")]
+            {
+                let (gbk_bytes, _, _) = encoding_rs::GB18030.encode(path);
+                CString::new(gbk_bytes)?
+            }
+            #[cfg(not(target_os = "windows"))]
+            {
+                CString::new(path)?
+            }
+        };
         if unsafe { ncnn_net_load_param(self.ptr, c_str.as_ptr()) } != 0 {
             anyhow::bail!("Error loading params {}", path);
         } else {
@@ -49,7 +59,17 @@ impl Net {
         }
     }
     pub fn load_model(&mut self, path: &str) -> anyhow::Result<()> {
-        let c_str = CString::new(path).unwrap();
+        let c_str = {
+            #[cfg(target_os = "windows")]
+            {
+                let (gbk_bytes, _, _) = encoding_rs::GB18030.encode(path);
+                CString::new(gbk_bytes)?
+            }
+            #[cfg(not(target_os = "windows"))]
+            {
+                CString::new(path)?
+            }
+        };
         if unsafe { ncnn_net_load_model(self.ptr, c_str.as_ptr()) } != 0 {
             anyhow::bail!("Error loading model {}", path);
         } else {
