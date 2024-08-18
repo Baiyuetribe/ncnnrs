@@ -1,6 +1,6 @@
 [package]
 name = "ncnnrs"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["baiyue"]
 description = " Rust implementation of ncnn, a lightweight neural network inference framework, with separated static library for cross-platform compilation."
@@ -24,3 +24,6 @@ bindgen = "0.69.4"
 [lints.rust]
 #unsafe_code = "forbid"
 warnings = "allow" # deny, warn, allow, or forbid
+
+[features]
+cpu = [] # 默认启用vulkan，开启此特质将仅使用cpu

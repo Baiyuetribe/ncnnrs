@@ -24,6 +24,7 @@ impl Net {
     }
 
     pub fn set_vulkan_device(&mut self, device_index: u32) {
+        #[cfg(not(feature = "cpu"))]
         unsafe {
             ncnn_net_set_vulkan_device(self.ptr, device_index as c_int);
         }

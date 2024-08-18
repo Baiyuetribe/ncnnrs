@@ -16,7 +16,7 @@ fn main() {
 
     // println!("cargo:rerun-if-env-changed=NCNN_INCLUDE_DIR");
     let bindings = bindgen::Builder::default()
-        .header(format!("{}/gpu.h", ncnn_include_dir.display())) // 启用gpu相关的函数
+        .header(format!("{}/gpu.h", ncnn_include_dir.display())) // 启用gpu相关的函数；# 对cpu模式，包含gpu.h头文件，所以不做处理
         .header(format!("{}/c_api.h", ncnn_include_dir.display())) // 通用入口
         // .clang_arg(format!("-I{}", ncnn_include_dir.display())) // 无效
         .clang_arg("-x")

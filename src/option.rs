@@ -25,13 +25,19 @@ impl Option {
     }
 
     pub fn use_vulkan_compute(&mut self, enabled: bool) {
+        #[cfg(not(feature = "cpu"))]
         unsafe {
             ncnn_option_set_use_vulkan_compute(self.ptr, enabled as c_int);
         }
     }
 
     pub fn get_vulkan_compute(&self) -> bool {
-        unsafe { ncnn_option_get_use_vulkan_compute(self.ptr) != 0 }
+        #[cfg(feature = "cpu")]
+        return false;
+        #[cfg(not(feature = "cpu"))]
+        unsafe {
+            ncnn_option_get_use_vulkan_compute(self.ptr) != 0
+        }
     }
 
     pub(crate) fn ptr(&self) -> ncnn_option_t {

@@ -33,44 +33,58 @@ pub fn version() -> &'static str {
 }
 
 pub fn get_gpu_count() -> i32 {
-    let res = unsafe { ncnn_bind::ncnn_get_gpu_count() };
-    res
+    #[cfg(feature = "cpu")]
+    return 0;
+    #[cfg(not(feature = "cpu"))]
+    {
+        let res = unsafe { ncnn_bind::ncnn_get_gpu_count() };
+        res
+    }
 }
 
 pub fn destroy_gpu_instance() {
-    unsafe { ncnn_bind::ncnn_destroy_gpu_instance() };
+    #[cfg(not(feature = "cpu"))]
+    unsafe {
+        ncnn_bind::ncnn_destroy_gpu_instance()
+    };
 }
 
 pub fn get_gpu_heap_budget(index: i32) -> u32 {
-    let device = unsafe { ncnn_bind::ncnn_get_gpu_device(index) };
-    if device.is_null() {
-        return 0;
+    #[cfg(feature = "cpu")]
+    return 0;
+    #[cfg(not(feature = "cpu"))]
+    {
+        let device = unsafe { ncnn_bind::ncnn_get_gpu_device(index) };
+        if device.is_null() {
+            return 0;
+        }
+        let res = unsafe { ncnn_bind::ncnn_VulkanDevice_get_heap_budget(device) };
+        res
     }
-    let res = unsafe { ncnn_bind::ncnn_VulkanDevice_get_heap_budget(device) };
-    res
 }
 
 pub fn get_device_name(index: i32) -> &'static str {
-    let info = unsafe { ncnn_bind::ncnn_get_gpu_info(index) };
-    if info.is_null() {
-        return "unknown";
+    #[cfg(feature = "cpu")]
+    {
+        return "cpu-only";
     }
-    let res = unsafe { ncnn_bind::ncnn_GpuInfo_device_name(info) };
-    if res.is_null() {
-        return "unknown";
+    #[cfg(not(feature = "cpu"))]
+    {
+        let info = unsafe { ncnn_bind::ncnn_get_gpu_info(index) };
+        if info.is_null() {
+            return "unknown";
+        }
+        let res = unsafe { ncnn_bind::ncnn_GpuInfo_device_name(info) };
+        if res.is_null() {
+            return "unknown";
+        }
+        let c_str = unsafe { CStr::from_ptr(res) };
+        let str_slice: &str = c_str.to_str().unwrap_or("unknown");
+        str_slice
     }
-    let c_str = unsafe { CStr::from_ptr(res) };
-    let str_slice: &str = c_str.to_str().unwrap_or("unknown");
-    str_slice
 }
 
 #[test]
 fn test_version() {
     println!("ncnn version: {}", version());
-}
-
-#[test]
-fn test_some() {
-    let res = unsafe { ncnn_bind::ncnn_get_gpu_count() };
-    println!("cpu count: {}", res);
 }

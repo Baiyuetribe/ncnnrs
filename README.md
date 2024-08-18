@@ -80,6 +80,19 @@ fn main() {
 
 `ncnnrs`在编译阶段仅关联 ncnn 库的头文件，不依赖 ncnn 的 lib。因此跨端时，在 build.rs 里按场景链接到对应的库即可。
 
+### 仅 CPU 绑定
+
+默认开启 vulkan 加速，如果要单纯使用 cpu 库。只需添加`features = ["cpu"]`。
+示例
+
+```toml
+# 全局启用
+ncnnrs = { version = "*", features = ["cpu"] }
+# 或特殊平台启用，比如linux arm64不支持GPU加速时启用
+[target.'cfg(all(target_os = "linux",target_arch = "aarch64"))'.dependencies]
+ncnnrs = { version = "*", features = ["cpu"] }
+```
+
 ### 参考
 
 - [tpoisonooo/rust-ncnn](https://github.com/tpoisonooo/rust-ncnn)
