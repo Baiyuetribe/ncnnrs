@@ -141,6 +141,24 @@ impl MatPixelType {
     }
 }
 
+// 枚举border类型
+pub enum BorderType {
+    Constant,
+    Replicate,
+    Reflect,
+    Transparent,
+}
+impl BorderType {
+    pub fn to_int(&self) -> i32 {
+        match self {
+            BorderType::Constant => 0,
+            BorderType::Replicate => 1,
+            BorderType::Reflect => 2,
+            BorderType::Transparent => -233,
+        }
+    }
+}
+
 pub struct Mat {
     ptr: ncnn_mat_t,
 }
