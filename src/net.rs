@@ -9,6 +9,7 @@ pub struct Net {
 }
 
 unsafe impl Send for Net {}
+unsafe impl Sync for Net {}
 
 impl Net {
     pub fn new() -> Net {
@@ -86,7 +87,7 @@ impl Net {
         }
     }
 
-    pub fn create_extractor(&mut self) -> Extractor<'_> {
+    pub fn create_extractor(&self) -> Extractor<'_> {
         let ptr;
         unsafe {
             ptr = ncnn_extractor_create(self.ptr);
