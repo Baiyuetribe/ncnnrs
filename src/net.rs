@@ -44,6 +44,15 @@ impl Net {
             }
         };
         if unsafe { ncnn_net_load_param(self.ptr, c_str.as_ptr()) } != 0 {
+            #[cfg(target_os = "windows")] // 当Windows为utf-8编码时，再尝试一次
+            {
+                let c_str = CString::new(path)?;
+                if unsafe { ncnn_net_load_param(self.ptr, c_str.as_ptr()) } != 0 {
+                    return anyhow::bail!("Error loading params {}", path);
+                } else {
+                    return Ok(());
+                }
+            }
             anyhow::bail!("Error loading params {}", path);
         } else {
             Ok(())
@@ -73,6 +82,15 @@ impl Net {
             }
         };
         if unsafe { ncnn_net_load_model(self.ptr, c_str.as_ptr()) } != 0 {
+            #[cfg(target_os = "windows")] // 当Windows为utf-8编码时，再尝试一次
+            {
+                let c_str = CString::new(path)?;
+                if unsafe { ncnn_net_load_model(self.ptr, c_str.as_ptr()) } != 0 {
+                    return anyhow::bail!("Error loading model {}", path);
+                } else {
+                    return Ok(());
+                }
+            }
             anyhow::bail!("Error loading model {}", path);
         } else {
             Ok(())
